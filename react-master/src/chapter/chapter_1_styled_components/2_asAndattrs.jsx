@@ -21,6 +21,7 @@ const Input = styled.input.attrs({ required: true, minLength: 10 })`
 
 function App() {
   return (
+    // Father에 정의된건 div태그이지만 as로 header태그로 변경 가능
     <Father as="header">
         {/* <Btn>Log in</Btn>
         <Btn as="a" href="">Link</Btn> */}
