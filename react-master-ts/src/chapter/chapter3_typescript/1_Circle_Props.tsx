@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 interface ContainerProps{
@@ -26,6 +26,9 @@ interface CircleProps {
 }
 
 function Circle({ bgColor, borderColor, text="default text"}: CircleProps){
+
+    const [counter, setCounter] = useState(1);  // 초기값을 주면 초기값 타입에 자동으로 타입이 따른다.
+
     // ?? --> default 지정
     return (
     <Container bgColor={ bgColor } borderColor={borderColor ?? "white"}>
