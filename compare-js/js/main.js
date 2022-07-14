@@ -2,6 +2,7 @@ import Controller from "./Controller.js";
 import Store from "./store.js";
 import storage from "./storage.js";
 import SearchFormView from "./views/SearchFormView.js";
+import SearchResultView from "./views/SearchResultView.js";
 
 // 실행 : npx lite-server --baseDir .\compare-js\
 
@@ -17,7 +18,8 @@ function main() {
 
   // View
   const views = {
-    searchFormView: new SearchFormView()
+    searchFormView: new SearchFormView(),
+    SearchResultView : new SearchResultView()
   };
 
   new Controller(store, views);
