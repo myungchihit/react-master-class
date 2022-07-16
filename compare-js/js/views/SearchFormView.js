@@ -45,4 +45,12 @@ export default class SearchFormView extends View{
   handleReset(){
     this.emit("@reset");
   }
+
+  // 추천검색어 , 최근검색어 클릭시 input에다가 keyword 넣어주기위함
+  show(value = "") {
+    this.inputElement.value = value;
+    this.showResetButton(this.inputElement.value.length > 0);
+
+    super.show();
+  }
 }

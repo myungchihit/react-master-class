@@ -18,4 +18,9 @@ export default class Store {
     this.searchKeyword = keyword;
     this.searchResult = this.storage.productData.filter(product => product.name.includes(keyword));
   }
+
+  // 추천 검색어 조회
+  getKeywordList(){
+    return this.storage.keywordData;
+  }
 }
