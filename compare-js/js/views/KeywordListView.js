@@ -2,13 +2,16 @@ import { delegate, qs } from "../helpers.js";
 import View from "./View.js";
 
 export default class KeywordListView extends View {
-  constructor() {
+  constructor(element = qs("#keyword-list-view"), template = new Template()) {
     
-    super(qs("#keyword-list-view"));
+    // HistoryListView가 이 클래스를 상속받기 때문에 #keyword-list-view 고정으로 받으면 안된다.
+    //super(qs("#keyword-list-view"));
+    super(element);
     
-    this.template = new Template();
+    // template도 주입받아서 가져올 수 있도록한다.
+    //this.template = new Template();
+    this.template = template;
     this.bindEvents();
-
   }
 
   show(data = []){
@@ -33,7 +36,6 @@ export default class KeywordListView extends View {
 }
 
 class Template {
-  
   getEmptyMessage(){
     return `<div class="empty-box">추천 검색어가 없습니다.</div>`;
   }
@@ -54,5 +56,4 @@ class Template {
       </li>
     `;
   }
-
 }

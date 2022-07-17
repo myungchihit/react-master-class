@@ -23,4 +23,14 @@ export default class Store {
   getKeywordList(){
     return this.storage.keywordData;
   }
+
+  // 최근 검색어 조회
+  getHistoryList(){
+    return this.storage.historyData.sort(this._sortHistory);
+  }
+
+  // 날짜별 sort
+  _sortHistory(history1, history2){
+    return history2.date > history1.date
+  }
 }
