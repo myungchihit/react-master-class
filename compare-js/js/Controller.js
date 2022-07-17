@@ -29,7 +29,8 @@ export default class Controller {
     this.keywordListView.on('@click', event => this.search(event.detail.value));
 
     // 최근 검색어 클릭시 해당 검색어로 이동 ( HistoryListView가 KeywordListView를 상속 받아서 )
-    this.historyListView.on('@click', event => this.search(event.detail.value));
+    this.historyListView.on('@click', event => this.search(event.detail.value))
+    .on("@remove", (event) => this.removeHistory(event.detail.value));
   }
 
   // 검색어 검색
@@ -46,8 +47,15 @@ export default class Controller {
     this.render();
   }
 
-  changeTab(selectedTab){ // 탭변경 이벤트
+  // 탭변경 이벤트
+  changeTab(selectedTab){ 
     this.store.selectedTab = selectedTab;
+    this.render();
+  }
+
+  // 최근 검색어 제거
+  removeHistory(keyword){
+    this.store.removeHistory(keyword);
     this.render();
   }
 
