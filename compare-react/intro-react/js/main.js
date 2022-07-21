@@ -1,5 +1,15 @@
 import store from './js/Store.js'
 
+const TabType = { // Store.js에서 사용할 수 있게 export
+  KEYWORD: "KEYWORD",
+  HISTORY: "HISTORY"
+}
+
+const TabLabel = {
+  [TabType.KEYWORD]: '추천 검색어',
+  [TabType.HISTORY]: '최근 검색어'
+}
+
 class App extends React.Component {
   constructor() {
     super();
@@ -7,8 +17,21 @@ class App extends React.Component {
       searchKeyword : "",
       searchResult : [],
       sumitted: false, // 검색시 검색 결과 유무
+      selectedTab: TabType.KEYWORD,
+      keywordList: [],
     };
   }
+
+  // react 생명주기 
+  // mount : 돔에 반영되는것.
+  // componentDidMount : 돔에 마운트될때 이벤트를 바인딩하거나 외부 데이터를 가져오는 작업 수행.
+  // componentWillUnmount : 이벤트 핸들러를 제거하는 등 리소스 정리 작업.
+  componentDidMount(){
+    // 추천 검색어 가져와서 state에 반영
+    const keywordList = store.getKeywordList();
+    this.setState({keywordList});
+  }
+
 
   // input 변경 이벤트
   handleChangeInput(event){
@@ -30,8 +53,9 @@ class App extends React.Component {
   search(searchKeyword){
     const searchResult = store.search(searchKeyword);
     this.setState({ 
+      searchKeyword,
       searchResult,
-      sumitted : true 
+      sumitted : true,
     });
   }
 
@@ -63,6 +87,7 @@ class App extends React.Component {
     //   resetButton = <button type="reset" className="btn-reset"></button>;
     // }
 
+    // 검색 폼 Dom
     const searchForm = (
       <form 
         onSubmit={event => this.handleSubmit(event)}
@@ -81,7 +106,8 @@ class App extends React.Component {
         }
      </form>
     );
-
+    
+    // 검색 결과 Dom
     const searchResult = (
       this.state.searchResult.length > 0 
       ? (
@@ -98,6 +124,39 @@ class App extends React.Component {
       ) 
       : (<div className="empty-box">검색 결과가 없습니다.</div>)
     )
+    
+    // 추천검색어 리스트 Dom
+    const keywordList = (
+      <ul className="list">
+        {this.state.keywordList.map((item, index) => {
+          return (
+            <li key={item.id} onClick={() => this.search(item.keyword)}>
+              <span className="number">{index + 1}</span>
+              <span>{item.keyword}</span>
+            </li>
+          )
+        })}
+      </ul>
+    );
+
+    // Tab Dom
+    const tabs = (
+      <>
+        <ul className="tabs">
+          {Object.values(TabType).map(tabType => {
+            return(
+              <li key={tabType} 
+                  className={this.state.selectedTab === tabType ? "active" : ""}
+                  onClick={() => this.setState({selectedTab : tabType})}>
+                {TabLabel[tabType]}
+              </li>
+            )
+          })}
+        </ul>
+        {this.state.selectedTab === TabType.KEYWORD && keywordList}
+        {this.state.selectedTab === TabType.HISTORY && <>최근검색어</>}
+      </>
+    )
 
     return(
       <>
@@ -107,7 +166,7 @@ class App extends React.Component {
         <div className="container">
           {searchForm}
           <div className="content">
-            { this.state.sumitted &&  searchResult }
+            { this.state.sumitted ? searchResult : tabs}
           </div>
         </div>
       </>
