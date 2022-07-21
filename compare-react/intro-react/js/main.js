@@ -1,4 +1,5 @@
 import store from './js/Store.js'
+import { formatRelativeDate } from './js/helpers.js';
 
 const TabType = { // Store.js에서 사용할 수 있게 export
   KEYWORD: "KEYWORD",
@@ -19,6 +20,7 @@ class App extends React.Component {
       sumitted: false, // 검색시 검색 결과 유무
       selectedTab: TabType.KEYWORD,
       keywordList: [],
+      historyList: [],
     };
   }
 
@@ -27,9 +29,11 @@ class App extends React.Component {
   // componentDidMount : 돔에 마운트될때 이벤트를 바인딩하거나 외부 데이터를 가져오는 작업 수행.
   // componentWillUnmount : 이벤트 핸들러를 제거하는 등 리소스 정리 작업.
   componentDidMount(){
-    // 추천 검색어 가져와서 state에 반영
+    // 추천 검색어, 검색기록 가져와서 state에 반영
     const keywordList = store.getKeywordList();
-    this.setState({keywordList});
+    const historyList = store.getHistoryList();
+
+    this.setState({keywordList , historyList});
   }
 
 
@@ -52,9 +56,12 @@ class App extends React.Component {
 
   search(searchKeyword){
     const searchResult = store.search(searchKeyword);
+    const historyList = store.getHistoryList();
+
     this.setState({ 
       searchKeyword,
       searchResult,
+      historyList,
       sumitted : true,
     });
   }
@@ -70,6 +77,16 @@ class App extends React.Component {
     }, () => {
       
     })
+  }
+
+  // 최근 검색어 목록 제거 이벤트
+  handleClickRemoveHistory(event , keyword){
+    // 이벤트 전파 제거 (버튼 이벤트가 버블링됨)
+    event.stopPropagation();
+
+    store.removeHistory(keyword);
+    const historyList = store.getHistoryList();
+    this.setState({historyList});
   }
 
   render() {
@@ -138,6 +155,23 @@ class App extends React.Component {
         })}
       </ul>
     );
+    
+    // 최근검색어 리스트 Dom
+    const historyList = (
+      <>
+        <ul className="list">
+          {this.state.historyList.map(({id, keyword, date}) => {
+            return (
+              <li key={id} onClick={() => this.search(keyword)}>
+                <span>{keyword}</span>
+                <span className="date">{formatRelativeDate(date)}</span>
+                <button className="btn-remove" onClick={event => this.handleClickRemoveHistory(event, keyword)}></button>
+              </li>
+            )
+          })}
+        </ul>
+      </>
+    );
 
     // Tab Dom
     const tabs = (
@@ -154,7 +188,7 @@ class App extends React.Component {
           })}
         </ul>
         {this.state.selectedTab === TabType.KEYWORD && keywordList}
-        {this.state.selectedTab === TabType.HISTORY && <>최근검색어</>}
+        {this.state.selectedTab === TabType.HISTORY && historyList}
       </>
     )
 
