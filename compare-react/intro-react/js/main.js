@@ -36,7 +36,6 @@ class App extends React.Component {
     this.setState({keywordList , historyList});
   }
 
-
   // input 변경 이벤트
   handleChangeInput(event){
     // state가 자동으로 render함수를 실행시키려면 직접적으로 state에 값을 집어넣으면 안된다.
